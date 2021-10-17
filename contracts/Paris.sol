@@ -52,8 +52,8 @@ contract Paris {
     }
 
     function resultGame() public {
-        require(msg.sender == _createur);
-        require(block.timestamp > endGameTime);
+        require(msg.sender == _createur, "not authorized");
+        require(block.timestamp > endGameTime, "event is not finished");
 
         coteGagnante = Outcome.EQUIPE1;
     }
