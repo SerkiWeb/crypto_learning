@@ -57,4 +57,8 @@ contract Paris {
 
         coteGagnante = Outcome.EQUIPE1;
     }
+
+    function getTotalReward() public view returns(uint256) {
+        return totalReward;
+    }
 }
