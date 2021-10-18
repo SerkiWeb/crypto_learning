@@ -1,0 +1,23 @@
+{
+  "name": "paris",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SerkiWeb/crypto_learning.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SerkiWeb/crypto_learning/issues"
+  },
+  "homepage": "https://github.com/SerkiWeb/crypto_learning#readme",
+  "description": ""
+}

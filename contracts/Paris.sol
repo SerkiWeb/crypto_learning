@@ -76,6 +76,5 @@ contract Paris {
         bool marketIsClose =  (block.timestamp > endGameTime);
 
         return marketIsClose;
-
     }
 }
