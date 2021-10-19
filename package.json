@@ -19,5 +19,8 @@
     "url": "https://github.com/SerkiWeb/crypto_learning/issues"
   },
   "homepage": "https://github.com/SerkiWeb/crypto_learning#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "web3": "^1.6.0"
+  }
 }
