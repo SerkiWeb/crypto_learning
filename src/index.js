@@ -1,7 +1,7 @@
-var Web3      = require('web3');
-const express = require('express');
-const app     = express();
-const path    = require('path');
+var Web3          = require('web3');
+const express     = require('express');
+const app         = express();
+const path        = require('path');
 var parisContract = require('../build/contracts/Paris.json');
 
 app.set('view engine', 'ejs');
@@ -9,6 +9,7 @@ app.set('views', path.join(__dirname, 'views/'))
 
 app.get('/' , (req , res)=>{
     var reward = 0;
+    var marketIsClosed = false;
     let web3 = new Web3();
     web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
     
@@ -17,18 +18,36 @@ app.get('/' , (req , res)=>{
         gasPrice: '20000000000'
     });
 
+    var remote = {};
     myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then(function(receipt) {
-        reward = receipt;
+    .then((reward) => {
+        remote['reward'] =  web3.utils.fromWei(reward, 'ether');
+    }) 
+    .then(function() {
+        myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+        .then((isCLose) => {
+            return remote['isCLose'] = isCLose;
+        })
+
+        return remote;
+    })
+    .then((contract) => {
+        res.render('market', {contractName : parisContract.contractName, reward: contract.reward, marketIsClosed : contract.marketIsClosed});
     })
     .catch((err) => {
         console.log(err);
     });
 
-    nameContract = parisContract.contractName;
-    res.render('market', {contractName : nameContract, reward: reward})
+
+
+    function placeMarketStatus(contract, isClosed) {
+        remoteContract['marketIsClosed'] = isClosed;
+        return remoteContract;
+    }
+
 })
 
 app.listen(8080, ()=>{
     console.log('server running on port 8080');
 });
+

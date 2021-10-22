@@ -5,17 +5,15 @@ contract Paris {
 
     enum Outcome {EQUIPE1, NUL, EQUIPE2} 
 
-    address private _createur;
-
     Outcome outcomeGagnant;
 
     uint256 totalReward;
+    uint endGameTime;
 
     uint256 private _coteEquipe1;
     uint256 private _coteNul;
     uint256 private _coteEquipe2;
-
-    uint endGameTime;
+    address private _createur;
 
     struct Bet {
         Outcome outcome;
@@ -25,7 +23,12 @@ contract Paris {
 
     mapping (address => Bet) markets;
 
-    constructor(uint256 coteEquipe1_, uint256 coteNul_, uint256 coteEquipe2_, uint duration) public {
+    constructor(
+
+        uint256 coteEquipe1_, 
+        uint256 coteNul_, 
+        uint256 coteEquipe2_, 
+        uint duration) public {
 
         _createur = msg.sender;
         _coteEquipe1 = coteEquipe1_;
@@ -33,6 +36,7 @@ contract Paris {
         _coteEquipe2 = coteEquipe2_;
         endGameTime = block.timestamp + duration;
         totalReward = 0;
+
     }
 
     function addBet(uint256 outcome) payable public {
@@ -72,9 +76,21 @@ contract Paris {
         }
     }
 
-    function marketIsClosed() public returns(bool) {
+    function marketIsClosed() public view returns(bool) {
         bool marketIsClose =  (block.timestamp > endGameTime);
 
         return marketIsClose;
+    }
+
+    function getCote1() public view returns(uint256) {
+        return _coteEquipe1;
+    }
+
+    function getCote2()  public view  returns(uint256) {
+        return _coteEquipe2;
+    }
+
+    function getCoteNulle()public view returns(uint256) {
+        return _coteNul;
     }
 }

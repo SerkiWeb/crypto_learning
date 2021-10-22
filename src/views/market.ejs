@@ -4,13 +4,20 @@
 <title></title>
 </head>
 <body onload="renderHello()">
+    <span>market is 
+    <% if (marketIsClosed == false) { %>
+        <span>open</span>
+    <% } else { %>
+        <span>close</span>
+    <% } %>
     <h1>smart contract : </h1>
     <%=contractName%>
     <h1>Reward :</h1>
     <%=reward%>
 </script>
 
-<p></p>
-
+<div>
+    <button></button>
+</div>
 </body>
 </html>
