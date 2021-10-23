@@ -18,34 +18,48 @@ app.get('/' , (req , res)=>{
         gasPrice: '20000000000'
     });
 
-    var remote = {};
-    myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    var remoteContract = [];
+    var reward = myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
     .then((reward) => {
-        remote['reward'] =  web3.utils.fromWei(reward, 'ether');
-    }) 
-    .then(function() {
-        myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-        .then((isCLose) => {
-            return remote['isCLose'] = isCLose;
-        })
-
-        return remote;
+       return web3.utils.fromWei(reward, 'ether');
     })
-    .then((contract) => {
-        res.render('market', {contractName : parisContract.contractName, reward: contract.reward, marketIsClosed : contract.marketIsClosed});
+    .catch((err) => {
+        console.log(err);
+    });
+    
+    var isClosed = myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((isClosed) => {
+        return isClosed;
     })
     .catch((err) => {
         console.log(err);
     });
 
+    var cotes = myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((cotes) => {
+        return cotes;
+    })
+    .catch((err) => {console.log(err);
+    });
 
 
-    function placeMarketStatus(contract, isClosed) {
-        remoteContract['marketIsClosed'] = isClosed;
-        return remoteContract;
-    }
+    var homePage = async () => {
+        var rewardContract = await reward;
+        var statusContract = await isClosed;
+        var cotesContract = await cotes;
+        
+        return res.render('market', {
+            contractName : parisContract.contractName, 
+            reward: rewardContract, 
+            marketIsClosed : statusContract,
+            cote1 : remoteContract.cote1,
+            cote2 : remoteContract.cote2,
+            coteNulle : cotesContract
+        });
+    };
 
-})
+    homePage();
+});
 
 app.listen(8080, ()=>{
     console.log('server running on port 8080');
