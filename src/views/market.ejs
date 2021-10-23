@@ -10,19 +10,25 @@
     <% } else { %>
         <span>close</span>
     <% } %>
-    <h1>smart contract : </h1>
-    <%=contractName%>
-    <h1>Reward :</h1>
-    <%=reward%>
+    <h1>smart contract : <%=contractName%> </h1>
+    
+    <h1>Reward : <%=reward%></h1>
+    
 </script>
 
 <div>
-    <span>Equipe A : </span>
-    <span><%=cote1%></span>
-    <span>Nul : </span>
-    <span><%=coteNulle%></span>
-    <span>Equipe 2</span>
-    <span><%=cote2%></span>
+    <div>
+        <span>Equipe A:&nbsp;</span>
+        <span><%=cote1%></span>
+    </div>
+    <div>
+        <span>Nul :&nbsp;</span>
+        <span><%=coteNulle%></span>
+    </div>
+    <div>
+        <span>Equipe 2 :&nbsp;</span>
+        <span><%=cote2%></span>
+    </div>
     <button>bet</button>
 </div>
 </body>

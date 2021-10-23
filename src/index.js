@@ -18,7 +18,6 @@ app.get('/' , (req , res)=>{
         gasPrice: '20000000000'
     });
 
-    var remoteContract = [];
     var reward = myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
     .then((reward) => {
        return web3.utils.fromWei(reward, 'ether');
@@ -35,26 +34,41 @@ app.get('/' , (req , res)=>{
         console.log(err);
     });
 
-    var cotes = myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((cotes) => {
-        return cotes;
+    var cote1 =  myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((cote1) => {
+        return cote1;
     })
     .catch((err) => {console.log(err);
     });
 
+    var cote2 =  myContract.methods.getCote2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((cote1) => {
+        return cote1;
+    })
+    .catch((err) => {console.log(err);
+    });
+
+    var coteNulle =  myContract.methods.getCoteNulle().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((coteNulle) => {
+        return coteNulle;
+    })
+    .catch((err) => {console.log(err);
+    });
 
     var homePage = async () => {
         var rewardContract = await reward;
         var statusContract = await isClosed;
-        var cotesContract = await cotes;
+        var cote1Contract = await cote1;
+        var cote2Contract = await cote2;
+        var coteNulleContract = await coteNulle;
         
         return res.render('market', {
             contractName : parisContract.contractName, 
             reward: rewardContract, 
             marketIsClosed : statusContract,
-            cote1 : remoteContract.cote1,
-            cote2 : remoteContract.cote2,
-            coteNulle : cotesContract
+            cote1 : cote1Contract,
+            cote2 : cote2Contract,
+            coteNulle : coteNulleContract
         });
     };
 
