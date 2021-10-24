@@ -21,7 +21,6 @@
   "homepage": "https://github.com/SerkiWeb/crypto_learning#readme",
   "description": "",
   "dependencies": {
-    "@ethereumjs/tx": "^3.3.2",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "web3": "^1.6.0"

@@ -2,7 +2,6 @@ var Web3          = require('web3');
 const express     = require('express');
 const app         = express();
 const path        = require('path');
-var Tx = require('@ethereumjs/tx').Transaction;
 var parisContract = require('../build/contracts/Paris.json');
 
 app.use(express.static(__dirname + '/public'));
@@ -14,7 +13,6 @@ web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
 
 app.get('/' , (req , res)=>{
     var reward = 0;
-    var marketIsClosed = false;
 
     var myContract = new web3.eth.Contract( parisContract.abi, '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa',  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
