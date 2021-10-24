@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="/css/style.css" rel="stylesheet" type="text/css">
 <title></title>
 </head>
-<body onload="renderHello()">
-    <span>market is 
+<body>
+    <span class="market"> market is 
     <% if (marketIsClosed == false) { %>
-        <span>open</span>
+        open</span>
     <% } else { %>
-        <span>close</span>
+        close</span>
     <% } %>
     <h1>smart contract : <%=contractName%> </h1>
     
-    <h1>Reward : <%=reward%></h1>
-    
-</script>
-
+    <h1>Actual Reward : <%=reward%></h1>
 <div>
-    <div>
-        <span>Equipe A:&nbsp;</span>
-        <span><%=cote1%></span>
-    </div>
-    <div>
-        <span>Nul :&nbsp;</span>
-        <span><%=coteNulle%></span>
-    </div>
-    <div>
-        <span>Equipe 2 :&nbsp;</span>
-        <span><%=cote2%></span>
-    </div>
-    <button>bet</button>
+    <form action="/bet" method="post">
+        <div>
+            <span>Equipe A:&nbsp;</span>
+            <span><%=cote1%></span>
+        </div>
+        <div>
+            <span>Nul :&nbsp;</span>
+            <span><%=coteNulle%></span>
+        </div>
+        <div>
+            <span>Equipe 2 :&nbsp;</span>
+            <span><%=cote2%></span>
+        </div>
+        <button>bet</button>
+    </form>
 </div>
 </body>
 </html>
