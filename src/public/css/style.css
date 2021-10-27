@@ -2,9 +2,16 @@ body {
     text-align: center;
 }
 
-.market {
+.market_green {
     margin: 10px;
     border: black solid 1px;  
     padding: 20px;
     background-color: green;
+}
+
+.market_red {
+    margin: 10px;
+    border: black solid 1px;  
+    padding: 20px;
+    background-color: red;
 }

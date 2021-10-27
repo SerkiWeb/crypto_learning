@@ -93,4 +93,11 @@ contract Paris {
     function getCoteNulle()public view returns(uint256) {
         return _coteNul;
     }
+
+    function getBets() public view 
+        returns(Outcome outcome, uint256 cote, uint256 reward) {
+        address sender = msg.sender;
+        Bet memory userBet = markets[msg.sender];
+        return (userBet.outcome, userBet.cote, userBet.reward);
+    }
 }

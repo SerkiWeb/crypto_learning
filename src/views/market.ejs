@@ -5,11 +5,11 @@
 <title></title>
 </head>
 <body>
-    <span class="market"> market is 
+    
     <% if (marketIsClosed == false) { %>
-        open</span>
+        <span class="market_green"> market is open</span>
     <% } else { %>
-        close</span>
+        <span class="market_red"> market is close</span>
     <% } %>
     <h1>smart contract : <%=contractName%> </h1>
     
@@ -18,17 +18,17 @@
     <form action="/bet" method="post">
         <div>
             <span>Equipe A:&nbsp;</span>
-            <span><%=cote1%></span>
+            <span><input type="radio" id="cote1" name="userBet" value="0"><%=cote1%></span>
         </div>
         <div>
             <span>Nul :&nbsp;</span>
-            <span><%=coteNulle%></span>
+            <span><input type="radio" id="coteNulle" name="userBet" value="1"><%=coteNulle%></span>
         </div>
         <div>
             <span>Equipe 2 :&nbsp;</span>
-            <span><%=cote2%></span>
+            <span><input type="radio" id="cote2" name="userBet" value="2"><%=cote2%></span>
         </div>
-        <button>bet</button>
+        <input type="submit" value="bet" />
     </form>
 </div>
 </body>

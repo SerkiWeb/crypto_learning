@@ -6,7 +6,11 @@ var parisContract = require('../build/contracts/Paris.json');
 
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views/'))
+app.set('views', path.join(__dirname, 'views/'));
+app.use(express.json()) // for json;
+app.use(express.urlencoded({ extended: true }));
+
+const CONTRACT_ADDRESS = '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa';
 
 let web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
@@ -14,7 +18,7 @@ web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
 app.get('/' , (req , res)=>{
     var reward = 0;
 
-    var myContract = new web3.eth.Contract( parisContract.abi, '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa',  {
+    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
         gasPrice: '20000000000'
     });
@@ -77,13 +81,15 @@ app.get('/' , (req , res)=>{
 });
 
 app.post('/bet', (req, res) => {
+ 
     var privateKey = 'abf99e597cfecc57653608e0f9406adbae258ae6bb937f0f052211d2485f4d79';
-    var myContract = new web3.eth.Contract( parisContract.abi, '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa',  {
+    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
         gasPrice: '20000000000'
     });
 
-    const transaction = myContract.methods.addBet(1);
+    userBet = req.body.userBet;
+    const transaction = myContract.methods.addBet(userBet);
     const options = {
         to      : transaction._parent._address,
         value : web3.utils.toWei('10', 'ether'),
@@ -92,7 +98,7 @@ app.post('/bet', (req, res) => {
     };
 
     var calculateGas = async () => {
-        var gas = await transaction.estimateGas({from: '0x61639B80171D8175760204636e3a56BdB931bdf6'})
+        var gas = await transaction.estimateGas({from: '0x61639B80171D8175760204636e3a56BdB931bdf6'});
         return gas;
     };
 
@@ -103,6 +109,11 @@ app.post('/bet', (req, res) => {
     };
 
     signTransac();
+    return res.send('your bet has been added to blockchain');
+});
+
+app.get('/myBet', (req, res) => {
+        
 });
 
 app.listen(8080, ()=>{
