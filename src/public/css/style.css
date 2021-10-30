@@ -1,5 +1,6 @@
 body {
     text-align: center;
+    padding-top: 10%;
 }
 
 .market_green {
@@ -14,4 +15,16 @@ body {
     border: black solid 1px;  
     padding: 20px;
     background-color: red;
+}
+
+.encart {
+    margin: 20px;
+}
+
+form my_input {
+    margin 5px;
+}
+
+#event_info{
+    display: inline-block;
 }

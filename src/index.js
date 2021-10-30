@@ -4,10 +4,10 @@ const app         = express();
 const path        = require('path');
 var parisContract = require('../build/contracts/Paris.json');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public/'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views/'));
-app.use(express.json()) // for json;
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 const CONTRACT_ADDRESS = '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa';
@@ -60,12 +60,29 @@ app.get('/' , (req , res)=>{
     .catch((err) => {console.log(err);
     });
 
+    var equipe1 = myContract.methods.getEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((equipe1) => {
+        return equipe1;
+    })
+    .catch((err) => {console.log(err);
+    });
+
+    var equipe2 = myContract.methods.getEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((equipe2) => {
+        return equipe2;
+    })
+    .catch((err) => {console.log(err);
+    });
+
     var homePage = async () => {
         var rewardContract = await reward;
         var statusContract = await isClosed;
         var cote1Contract = await cote1;
         var cote2Contract = await cote2;
         var coteNulleContract = await coteNulle;
+        var equipe1Contract = await equipe1;
+        var equipe2Contract = await equipe2;
+        
         
         return res.render('market', {
             contractName : parisContract.contractName, 
@@ -73,7 +90,11 @@ app.get('/' , (req , res)=>{
             marketIsClosed : statusContract,
             cote1 : cote1Contract,
             cote2 : cote2Contract,
-            coteNulle : coteNulleContract
+            coteNulle : coteNulleContract,
+            equipe1 : equipe1Contract,
+            equipe2 : equipe2Contract,
+            scoreEquipe1 : 0,
+            scoreEquipe2 : 0,
         });
     };
 
@@ -88,11 +109,13 @@ app.post('/bet', (req, res) => {
         gasPrice: '20000000000'
     });
 
-    userBet = req.body.userBet;
+    var userBet = req.body.userBet;
+    var ether = req.body.ether;
+    
     const transaction = myContract.methods.addBet(userBet);
     const options = {
         to      : transaction._parent._address,
-        value : web3.utils.toWei('10', 'ether'),
+        value : web3.utils.toWei(ether, 'ether'),
         data    : transaction.encodeABI(),
         gas : '1222220'
     };
@@ -112,8 +135,36 @@ app.post('/bet', (req, res) => {
     return res.send('your bet has been added to blockchain');
 });
 
-app.get('/myBet', (req, res) => {
-        
+app.get('/myBets', (req, res) => {
+    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
+        from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
+        gasPrice: '20000000000'
+    });
+    var bets = myContract.methods.getBets().call({from : '0x61639B80171D8175760204636e3a56BdB931bdf6'})
+    .then((bet) => {
+        console.log(bet);
+        //res.write(bet);
+    })
+    .catch((err) => {
+        console.log(err);
+    });    
+});
+
+app.get('/getResult', (req,res) => {
+    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
+        from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
+        gasPrice: '20000000000'
+    });
+
+    myContract.methods.getResult().call({from : '0x61639B80171D8175760204636e3a56BdB931bdf6'})
+    .then((winner) => {
+        res.write(winner);
+        res.end();
+    })
+    .catch((err) => {
+        res.send({'result' :'event is not finished' });
+        res.end();
+    });
 });
 
 app.listen(8080, ()=>{

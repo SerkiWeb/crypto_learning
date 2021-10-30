@@ -5,31 +5,45 @@
 <title></title>
 </head>
 <body>
-    
     <% if (marketIsClosed == false) { %>
         <span class="market_green"> market is open</span>
     <% } else { %>
         <span class="market_red"> market is close</span>
     <% } %>
-    <h1>smart contract : <%=contractName%> </h1>
-    
+    <div id="event_info">
+        <h1><%=equipe1%></h1>VS<h1><%=equipe2%></h1>
+        <h2><%=scoreEquipe1%></h2>:<h2><%=scoreEquipe1%></h2>
+    </div>    
     <h1>Actual Reward : <%=reward%></h1>
 <div>
     <form action="/bet" method="post">
-        <div>
+        <div  class="my_input">
             <span>Equipe A:&nbsp;</span>
-            <span><input type="radio" id="cote1" name="userBet" value="0"><%=cote1%></span>
+            <span><input type="radio" id="cote1" name="userBet" value="0" required><%=cote1%></span>
         </div>
-        <div>
+        <div class="my_input">
             <span>Nul :&nbsp;</span>
-            <span><input type="radio" id="coteNulle" name="userBet" value="1"><%=coteNulle%></span>
+            <span><input type="radio" id="coteNulle" name="userBet" value="1" required><%=coteNulle%></span>
         </div>
-        <div>
+        <div class="my_input">
             <span>Equipe 2 :&nbsp;</span>
-            <span><input type="radio" id="cote2" name="userBet" value="2"><%=cote2%></span>
+            <span><input type="radio" id="cote2" name="userBet" value="2" required><%=cote2%></span>
         </div>
+        <div class="my_input">
+            <span>bet :&nbsp;</span>
+            <span><input type="number" id="ether" name="ether" required/></span>
+        </div>
+        
         <input type="submit" value="bet" />
     </form>
 </div>
+<div class="encart">
+    <a href="/mybets">my bets</a>
+</div>
+<div class=encart>
+    <span>get result</span>
+    <button id="result">result</button>
+</div>
+<script src="./js/main.js"></script>
 </body>
 </html>

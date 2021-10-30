@@ -9,6 +9,8 @@ contract Paris {
 
     uint256 totalReward;
     uint endGameTime;
+    string equipe1;
+    string equipe2;
 
     uint256 private _coteEquipe1;
     uint256 private _coteNul;
@@ -24,7 +26,8 @@ contract Paris {
     mapping (address => Bet) markets;
 
     constructor(
-
+        string memory equipe1_,
+        string memory equipe2_,
         uint256 coteEquipe1_, 
         uint256 coteNul_, 
         uint256 coteEquipe2_, 
@@ -36,7 +39,8 @@ contract Paris {
         _coteEquipe2 = coteEquipe2_;
         endGameTime = block.timestamp + duration;
         totalReward = 0;
-
+        equipe1 = equipe1_;
+        equipe2 = equipe2_;
     }
 
     function addBet(uint256 outcome) payable public {
@@ -49,7 +53,7 @@ contract Paris {
         } else if (outcome == 1) {
             markets[msg.sender] = Bet(Outcome.NUL, _coteNul, (_coteNul * msg.value));
         } else if (outcome == 2) {
-            markets[msg.sender] =  Bet(Outcome.EQUIPE2, _coteNul, (_coteEquipe2 * msg.value));
+            markets[msg.sender] =  Bet(Outcome.EQUIPE2, _coteEquipe2, (_coteEquipe2 * msg.value));
         } else {
             revert("Your outcome is not available");
         }
@@ -57,11 +61,22 @@ contract Paris {
         totalReward += msg.value;
     }
 
-    function resultGame() public {
+    function resultGame(int winner) public {
+        require(winner == 0 || winner == 1 || winner == 2, "wrong outcome");
         require(msg.sender == _createur, "not authorized");
         require(block.timestamp > endGameTime, "event is not finished");
 
-        outcomeGagnant = Outcome.EQUIPE1;
+        if (winner == 0) {
+             outcomeGagnant = Outcome.EQUIPE1;
+        } else if (winner  == 1) {
+            outcomeGagnant = Outcome.NUL;
+        } else if (winner == 2) {
+            outcomeGagnant = Outcome.EQUIPE2;
+        } else {
+            revert("Your outcome is not available");
+        }
+
+       
     }
 
     function getTotalReward() public view returns(uint256) {
@@ -92,6 +107,20 @@ contract Paris {
 
     function getCoteNulle()public view returns(uint256) {
         return _coteNul;
+    }
+
+    function getResult() public view returns(Paris.Outcome) {
+        require(block.timestamp > endGameTime, 'event is not finished');
+
+        return outcomeGagnant;
+    }
+
+    function getEquipe1() public view returns(string memory){
+        return equipe1;
+    }
+
+    function getEquipe2() public view returns(string memory){ 
+        return  equipe2;
     }
 
     function getBets() public view 
