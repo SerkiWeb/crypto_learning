@@ -11,23 +11,24 @@
         <span class="market_red"> market is close</span>
     <% } %>
     <div id="event_info">
-        <h1><%=equipe1%></h1>VS<h1><%=equipe2%></h1>
-        <h2><%=scoreEquipe1%></h2>:<h2><%=scoreEquipe1%></h2>
+        <h1><%=equipe1%>&nbsp;VS&nbsp;<%=equipe2%></h1>
+        <h2><%=scoreEquipe1%>&nbsp;:&nbsp;<%=scoreEquipe1%></h2>
+        <h4>(<%=statusMatch%>)</h4>
     </div>    
     <h1>Actual Reward : <%=reward%></h1>
 <div>
     <form action="/bet" method="post">
         <div  class="my_input">
-            <span>Equipe A:&nbsp;</span>
-            <span><input type="radio" id="cote1" name="userBet" value="0" required><%=cote1%></span>
+            <span><%=equipe1%>:&nbsp;<%=cote1%></span>
+            <span><input type="radio" id="cote1" name="userBet" value="0" required></span>
         </div>
         <div class="my_input">
-            <span>Nul :&nbsp;</span>
-            <span><input type="radio" id="coteNulle" name="userBet" value="1" required><%=coteNulle%></span>
+            <span>Nul :&nbsp;<%=coteNulle%></span>
+            <span><input type="radio" id="coteNulle" name="userBet" value="1" required></span>
         </div>
         <div class="my_input">
-            <span>Equipe 2 :&nbsp;</span>
-            <span><input type="radio" id="cote2" name="userBet" value="2" required><%=cote2%></span>
+            <span><%=equipe2%>:&nbsp;<%=cote2%></span>
+            <span><input type="radio" id="cote2" name="userBet" value="2" required></span>
         </div>
         <div class="my_input">
             <span>bet :&nbsp;</span>
@@ -39,10 +40,6 @@
 </div>
 <div class="encart">
     <a href="/mybets">my bets</a>
-</div>
-<div class=encart>
-    <span>get result</span>
-    <button id="result">result</button>
 </div>
 <script src="./js/main.js"></script>
 </body>

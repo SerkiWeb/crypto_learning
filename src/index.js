@@ -74,6 +74,27 @@ app.get('/' , (req , res)=>{
     .catch((err) => {console.log(err);
     });
 
+    var butEquipe1 = myContract.methods.getButsEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((butEquipe1) => {
+        return butEquipe1;
+    })
+    .catch((err) => {console.log(err);
+    });
+
+    var butEquipe2 = myContract.methods.getButsEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((butEquipe2) => {
+        return butEquipe2;
+    })
+    .catch((err) => {console.log(err);
+    });
+
+    var statusMatch = myContract.methods.getStatusMatch().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
+    .then((statusMatch) => {
+        return statusMatch;
+    })
+    .catch((err) => {console.log(err);
+    });
+
     var homePage = async () => {
         var rewardContract = await reward;
         var statusContract = await isClosed;
@@ -82,8 +103,10 @@ app.get('/' , (req , res)=>{
         var coteNulleContract = await coteNulle;
         var equipe1Contract = await equipe1;
         var equipe2Contract = await equipe2;
-        
-        
+        var butEquipe1Contract = await butEquipe1;
+        var butEquipe2Contract = await butEquipe2;
+        var statusMatchContract = await statusMatch;
+            
         return res.render('market', {
             contractName : parisContract.contractName, 
             reward: rewardContract, 
@@ -93,8 +116,9 @@ app.get('/' , (req , res)=>{
             coteNulle : coteNulleContract,
             equipe1 : equipe1Contract,
             equipe2 : equipe2Contract,
-            scoreEquipe1 : 0,
-            scoreEquipe2 : 0,
+            scoreEquipe1 : butEquipe1Contract,
+            scoreEquipe2 : butEquipe2Contract,
+            statusMatch : statusMatchContract,
         });
     };
 
@@ -148,23 +172,6 @@ app.get('/myBets', (req, res) => {
     .catch((err) => {
         console.log(err);
     });    
-});
-
-app.get('/getResult', (req,res) => {
-    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
-        from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
-        gasPrice: '20000000000'
-    });
-
-    myContract.methods.getResult().call({from : '0x61639B80171D8175760204636e3a56BdB931bdf6'})
-    .then((winner) => {
-        res.write(winner);
-        res.end();
-    })
-    .catch((err) => {
-        res.send({'result' :'event is not finished' });
-        res.end();
-    });
 });
 
 app.listen(8080, ()=>{

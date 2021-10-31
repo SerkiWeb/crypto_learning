@@ -7,7 +7,8 @@ module.exports = function (deployer) {
         "PSG",
         1,
         2,
-        3, 
-        60
+        3,
+        1635717420,
+        180
     );
 };

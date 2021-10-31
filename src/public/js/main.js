@@ -14,11 +14,4 @@
         request.open("GET", "http://localhost:8080/getResult/");
         request.send();
     }
-
-
-    function displayResult(response) {
-        var oldText = document.getElementById('result').innerText;
-        document.getElementById('result').innerText = response;
-    }
-
 })();

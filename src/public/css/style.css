@@ -22,9 +22,13 @@ body {
 }
 
 form my_input {
-    margin 5px;
+    margin :5px;
 }
 
 #event_info{
-    display: inline-block;
+    padding-top: 10px;
+}
+
+#event_info h1 {
+    color : blue;
 }
