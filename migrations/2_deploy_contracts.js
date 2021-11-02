@@ -8,7 +8,7 @@ module.exports = function (deployer) {
         1,
         2,
         3,
-        1635717420,
-        180
+        1635893880,
+        120
     );
 };

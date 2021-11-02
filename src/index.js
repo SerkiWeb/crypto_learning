@@ -90,6 +90,7 @@ app.get('/' , (req , res)=>{
 
     var statusMatch = myContract.methods.getStatusMatch().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
     .then((statusMatch) => {
+        console.log(statusMatch);
         return statusMatch;
     })
     .catch((err) => {console.log(err);

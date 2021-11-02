@@ -15,7 +15,6 @@ contract Paris {
     string equipe2;
     int butsEquipe1;
     int butsEquipe2;
-    bool marketIsClose;
     StatusEvent statusMatch;
 
     uint256 private _coteEquipe1;
@@ -52,8 +51,7 @@ contract Paris {
         equipe2 = equipe2_;
         butsEquipe1 = 0;
         butsEquipe2 = 0;
-        statusMatch = StatusEvent.NOT_STARTED;
-        marketIsClose = false;
+        setEventStatus(StatusEvent.NOT_STARTED);
     }
 
     function addBet(uint256 outcome) payable public {
@@ -92,7 +90,7 @@ contract Paris {
         butsEquipe1 = butsEquipe1_;
         butsEquipe2 = butsEquipe2_;
 
-        statusMatch = StatusEvent.RESULTED;
+        setEventStatus(StatusEvent.RESULTED);
     }
 
     function getTotalReward() public view returns(uint256) {
@@ -108,7 +106,7 @@ contract Paris {
     }
 
     function marketIsClosed() public returns(bool) {
-        marketIsClose =  (block.timestamp > endEventTime);
+        bool marketIsClose =  (block.timestamp > endEventTime);
 
         return marketIsClose;
     }
@@ -149,23 +147,24 @@ contract Paris {
 
     function getStatusMatch() public returns(string memory) {
 
-        if (block.timestamp >= startEventTime && block.timestamp < endEventTime) {
-            statusMatch = StatusEvent.IN_PROGRESS;
+        if (block.timestamp >= startEventTime && block.timestamp < endEventTime 
+            && statusMatch == StatusEvent.NOT_STARTED) {
+            
+            setEventStatus(StatusEvent.IN_PROGRESS);
+            return "In progress"; 
         }
 
-        if (block.timestamp >= endEventTime) {
-            statusMatch = StatusEvent.FINISHED;
-            marketIsClose = true;
+        if (marketIsClosed()) {
+            setEventStatus(StatusEvent.FINISHED);
+            return "Finished";
         }
 
         if (statusMatch == StatusEvent.NOT_STARTED) {
             return "Not started";
-        } else if (statusMatch == StatusEvent.IN_PROGRESS) {
-            return "In progress";
-        } else if (statusMatch == StatusEvent.FINISHED) {
-            return "Finished";
         } else if (statusMatch == StatusEvent.RESULTED) {
             return "Resulted";
+        } else {
+            revert();
         }
     }
 
@@ -173,5 +172,9 @@ contract Paris {
         returns(Outcome outcome, uint256 cote, uint256 reward) {
         Bet memory userBet = markets[msg.sender];
         return (userBet.outcome, userBet.cote, userBet.reward);
+    }
+
+    function setEventStatus(StatusEvent status) private {
+        statusMatch = status;
     }
 }
