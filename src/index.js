@@ -23,90 +23,17 @@ app.get('/' , (req , res)=>{
         gasPrice: '20000000000'
     });
 
-    var reward = myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((reward) => {
-       return web3.utils.fromWei(reward, 'ether');
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-    
-    var isClosed = myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((isClosed) => {
-        return isClosed;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
-    var cote1 =  myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((cote1) => {
-        return cote1;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var cote2 =  myContract.methods.getCote2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((cote1) => {
-        return cote1;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var coteNulle =  myContract.methods.getCoteNulle().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((coteNulle) => {
-        return coteNulle;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var equipe1 = myContract.methods.getEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((equipe1) => {
-        return equipe1;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var equipe2 = myContract.methods.getEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((equipe2) => {
-        return equipe2;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var butEquipe1 = myContract.methods.getButsEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((butEquipe1) => {
-        return butEquipe1;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var butEquipe2 = myContract.methods.getButsEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((butEquipe2) => {
-        return butEquipe2;
-    })
-    .catch((err) => {console.log(err);
-    });
-
-    var statusMatch = myContract.methods.getStatusMatch().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'})
-    .then((statusMatch) => {
-        console.log(statusMatch);
-        return statusMatch;
-    })
-    .catch((err) => {console.log(err);
-    });
-
     var homePage = async () => {
-        var rewardContract = await reward;
-        var statusContract = await isClosed;
-        var cote1Contract = await cote1;
-        var cote2Contract = await cote2;
-        var coteNulleContract = await coteNulle;
-        var equipe1Contract = await equipe1;
-        var equipe2Contract = await equipe2;
-        var butEquipe1Contract = await butEquipe1;
-        var butEquipe2Contract = await butEquipe2;
-        var statusMatchContract = await statusMatch;
+        var rewardContract = await myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var statusContract = await myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var cote1Contract = await myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var cote2Contract = await myContract.methods.getCote2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var coteNulleContract = await myContract.methods.getCoteNulle().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var equipe1Contract = await myContract.methods.getEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var equipe2Contract = await myContract.methods.getEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var butEquipe1Contract = await myContract.methods.getButsEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var butEquipe2Contract = await myContract.methods.getButsEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var statusMatchContract = await myContract.methods.getStatusMatch().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
             
         return res.render('market', {
             contractName : parisContract.contractName, 
