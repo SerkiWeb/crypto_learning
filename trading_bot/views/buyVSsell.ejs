@@ -1,0 +1,19 @@
+<p>
+    <h2>Buyers VS sellers : </h2>
+    <p>
+        <span>Buyers : <%=buyers%></span>
+        <span>Sellers : <%=sellers%></span>
+    </p>
+</p>
+<p>
+    <% if (buyers > sellers) { %>
+        <h3>Buyers are more numerous</h3>
+    <% } else { %>
+        <h3>Sellers are more numerous</h3>
+    <% } %>
+    Sum on all orderbook
+</p>
+<p>
+    <h3>Imbalance : </h3>
+    <span><%=imbalance%></span>
+</p>

@@ -1,0 +1,14 @@
+<h2>Resistance : </h2>
+
+<ul>
+    <% resistances.forEach(function(accu) { %>
+       <li>Ref :<%=accu.ref%>, Last : <%=accu.last%> > Quantity :<%= accu.quantity %></li>
+    <% }); %> 
+</ul>
+
+<h2>Support :</h2>
+<ul>
+    <% supports.forEach(function(accu) { %>
+       <li>Ref :<%=accu.ref%>, Last : <%=accu.last%> > Quantity :<%= accu.quantity %></li>
+    <% }); %> 
+</ul>
