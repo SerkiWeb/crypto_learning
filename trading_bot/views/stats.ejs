@@ -1,0 +1,29 @@
+<table>
+        
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>all time high date</th>
+                <th>all time high value</th>
+                <% result.dates.forEach(function(date) { %>       
+                    <th><%=date%></th>
+                <% }); %> 
+            </tr>
+        </thead>
+        <tbody>
+            <% result.tokens.forEach(function(token) { %>
+                <tr>
+                    <td><%=token.name%></td>
+                    <td><%=token.allTimeHigh.date%></td>
+                    <td><%=token.allTimeHigh.value%></td>
+                    <% token.weeklyVariation.forEach(function(week) { %>
+                        <% if (week.variation > 0) { %>
+                            <td class="var_positive"><%=week.variation%></td>
+                        <% } else { %>
+                            <td class="var_negative"><%=week.variation%></td>
+                        <% } %> 
+                    <% }); %>      
+                </tr>       
+            <% }); %>
+        </tbody>
+</table>

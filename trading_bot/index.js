@@ -24,9 +24,106 @@ const updateHistory = (arr, value) => {
     return false;
 }
 
+const getAllTokens = async (market) => {
+
+    const btcHistory = await getTokenHistory('BTC/USDT', market);
+    const ethHistory = await getTokenHistory('ETH/USDT', market);
+    const solHistory = await getTokenHistory('SOL/USDT', market);
+    const bnbHistory = await getTokenHistory('BNB/USDT', market);
+    const adaHistory = await getTokenHistory('ADA/USDT', market);
+    const lunaHistory = await getTokenHistory('LUNA/USDT', market);
+    const dotHistory = await getTokenHistory('DOT/USDT', market);
+    return {
+        dates : btcHistory.dates,
+        tokens : 
+        [
+            {
+                name : 'ethereum', 
+                allTimeHigh : ethHistory.ath,
+                weeklyVariation : ethHistory.history,
+            },
+            { 
+                name : 'bitcoin',
+                allTimeHigh : btcHistory.ath,
+                weeklyVariation : btcHistory.history,
+            },
+            {
+                name : 'solana',
+                allTimeHigh : solHistory.ath,
+                weeklyVariation : solHistory.history,
+            },
+            {
+                name :'binance coin',
+                allTimeHigh : bnbHistory.ath,
+                weeklyVariation : bnbHistory.history,
+            },
+            {
+                name :'ada',
+                allTimeHigh : adaHistory.ath,
+                weeklyVariation : adaHistory.history,
+            },
+            {
+                name :'luna',
+                allTimeHigh : lunaHistory.ath,
+                weeklyVariation : lunaHistory.history,
+            },
+            {
+                name :'polkadot',
+                allTimeHigh : dotHistory.ath,
+                weeklyVariation : dotHistory.history,
+            },
+        ] 
+    };
+}
+
+const getTokenHistory = async (token, market) => {
+
+    const tokenOHLCV = await market.fetchOHLCV (token, '1w');
+    tokenHistory = modifyHistory(tokenOHLCV);
+    tokenHistory.history.forEach((week)=> {
+        week.variation = (((week.close - week.open)/week.open) * 100).toFixed(2);
+    });
+
+    return tokenHistory;
+}
+
+const modifyHistory = (prices) => {
+    const history = [];
+    const ath = {
+        date : 0,
+        value : 0,
+    };
+    
+    prices.forEach((week) => {
+        tokenPrices = {
+            date  : getFrDate(new Date(week[0])),
+            open  : week[1],
+            high  : week[2],
+            low   : week[3],
+            close : week[4],
+        }
+
+        if (tokenPrices.close >= ath.value) {
+            ath.value = tokenPrices.close;
+            ath.date  = tokenPrices.date;
+        }
+        
+        history.push(tokenPrices);
+    });
+    history.sort((a,b) => {return a - b});
+    const dates = history.map((week) => {
+        return week.date;
+    })
+    return {dates:dates, ath:ath, history:history };
+}
+
+const getFrDate = (date) => {
+    return (date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear());
+}
+
 const getLastVariation = (arr) => {
     const length = arr.length;  
-
+    
     if (length >= 2) {
         var result = ((arr[length - 1] -arr[length - 2]) /  arr[length - 2]) * 100;
         return result;
@@ -66,12 +163,6 @@ const priceDetail = async (market) => {
         },
         spread : (minAsk - minBid)
     };
-}
-
-const getAllMarkets = async () => {
-    var markets  = ccxt.markets;
-
-    
 }
 
 const accumulation = async (market) => {
@@ -158,8 +249,8 @@ app.get('/', (req, res) => {
      .catch((err) => {
         res.write("error market not available");
      });
-     console.log(btcHistory);
-     console.log(ethHistory);    
+     //console.log(btcHistory);
+     //console.log(ethHistory);    
 });
 
 app.get('/markets', (req,res) => {
@@ -197,6 +288,18 @@ app.get('/resistance', (req, res) => {
             supports : allData.supports,
         });
     });
+});
+
+app.get('/allToken', (req, res) => {
+    const market = new ccxt.binance();
+    getAllTokens(market)
+    .then((result) => {
+        console.log("result !!!!!!!!!!!!!!!!!!!!!!!")
+        console.log(result);
+        return res.render('stats.ejs',{
+            result : result
+        });
+    })
 });
 
 app.listen(8080, () => {

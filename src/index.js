@@ -1,9 +1,9 @@
-var Web3          = require('web3');
-const express     = require('express');
-const app         = express();
-const path        = require('path');
-var parisContract = require('../build/contracts/Paris.json');
+const Web3          = require('web3');
+const express       = require('express');
+const path          = require('path');
+const parisContract = require('../build/contracts/Paris.json');
 
+const app = express();
 app.use(express.static(__dirname + '/public/'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views/'));
@@ -11,9 +11,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 const CONTRACT_ADDRESS = '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa';
+const OWNER_ADDRESS = '0x6781EC56a01c4331d39a221B1A0b24003B709C13';
 
 let web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
+
+const calculateGas = async (transaction, address) => {
+    var gas = await transaction.estimateGas({from: address});
+    return gas;
+};
 
 app.get('/' , (req , res)=>{
     var reward = 0;
@@ -24,16 +30,16 @@ app.get('/' , (req , res)=>{
     });
 
     var homePage = async () => {
-        var rewardContract = await myContract.methods.getTotalReward().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var statusContract = await myContract.methods.marketIsClosed().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var cote1Contract = await myContract.methods.getCote1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var cote2Contract = await myContract.methods.getCote2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var coteNulleContract = await myContract.methods.getCoteNulle().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var equipe1Contract = await myContract.methods.getEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var equipe2Contract = await myContract.methods.getEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var butEquipe1Contract = await myContract.methods.getButsEquipe1().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var butEquipe2Contract = await myContract.methods.getButsEquipe2().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
-        var statusMatchContract = await myContract.methods.getStatusMatch().call({from : '0x6781EC56a01c4331d39a221B1A0b24003B709C13'});
+        var rewardContract = await myContract.methods.getTotalReward().call({from : OWNER_ADDRESS});
+        var statusContract = await myContract.methods.marketIsClosed().call({from : OWNER_ADDRESS});
+        var cote1Contract = await myContract.methods.getCote1().call({from : OWNER_ADDRESS});
+        var cote2Contract = await myContract.methods.getCote2().call({from : OWNER_ADDRESS});
+        var coteNulleContract = await myContract.methods.getCoteNulle().call({from : OWNER_ADDRESS});
+        var equipe1Contract = await myContract.methods.getEquipe1().call({from : OWNER_ADDRESS});
+        var equipe2Contract = await myContract.methods.getEquipe2().call({from : OWNER_ADDRESS});
+        var butEquipe1Contract = await myContract.methods.getButsEquipe1().call({from : OWNER_ADDRESS});
+        var butEquipe2Contract = await myContract.methods.getButsEquipe2().call({from : OWNER_ADDRESS});
+        var statusMatchContract = await myContract.methods.getStatusMatch().call({from : OWNER_ADDRESS});
             
         return res.render('market', {
             contractName : parisContract.contractName, 
@@ -65,22 +71,23 @@ app.post('/bet', (req, res) => {
     var ether = req.body.ether;
     
     const transaction = myContract.methods.addBet(userBet);
+    const gasCost = calculateGas(transaction,OWNER_ADDRESS);
     const options = {
         to      : transaction._parent._address,
         value : web3.utils.toWei(ether, 'ether'),
         data    : transaction.encodeABI(),
-        gas : '1222220'
+        gas : gasCost
     };
 
-    var calculateGas = async () => {
-        var gas = await transaction.estimateGas({from: '0x61639B80171D8175760204636e3a56BdB931bdf6'});
-        return gas;
-    };
-
-    var signTransac = async () => {
+    const signTransac = async () => {
         const signed  = await web3.eth.accounts.signTransaction(options, privateKey);
-        const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-        console.log(receipt);
+        const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .then((receipt) => {
+            return receipt;
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     };
 
     signTransac();
@@ -105,4 +112,3 @@ app.get('/myBets', (req, res) => {
 app.listen(8080, ()=>{
     console.log('server running on port 8080');
 });
-
