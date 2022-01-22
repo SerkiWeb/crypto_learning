@@ -1,0 +1,6 @@
+# Bet application
+
+# Setup
+1. lancer ganache 
+2. copier dans .env l'adresse du contrat paris, oracle
+3. lancer l'application web

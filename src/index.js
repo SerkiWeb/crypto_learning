@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Web3          = require('web3');
 const express       = require('express');
 const path          = require('path');
@@ -10,11 +11,8 @@ app.set('views', path.join(__dirname, 'views/'));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
-const CONTRACT_ADDRESS = '0x39B16c46de5337c4dE37Ef9Daf17102A760104fa';
-const OWNER_ADDRESS = '0x6781EC56a01c4331d39a221B1A0b24003B709C13';
-
 let web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider('http://localhost:7545'));
+web3.setProvider(new web3.providers.HttpProvider(process.env.NETWORK+':'+process.env.PORT));
 
 const calculateGas = async (transaction, address) => {
     var gas = await transaction.estimateGas({from: address});
@@ -24,22 +22,22 @@ const calculateGas = async (transaction, address) => {
 app.get('/' , (req , res)=>{
     var reward = 0;
 
-    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
+    var myContract = new web3.eth.Contract( parisContract.abi, process.env.CONTRACT,  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
         gasPrice: '20000000000'
     });
 
     var homePage = async () => {
-        var rewardContract = await myContract.methods.getTotalReward().call({from : OWNER_ADDRESS});
-        var statusContract = await myContract.methods.marketIsClosed().call({from : OWNER_ADDRESS});
-        var cote1Contract = await myContract.methods.getCote1().call({from : OWNER_ADDRESS});
-        var cote2Contract = await myContract.methods.getCote2().call({from : OWNER_ADDRESS});
-        var coteNulleContract = await myContract.methods.getCoteNulle().call({from : OWNER_ADDRESS});
-        var equipe1Contract = await myContract.methods.getEquipe1().call({from : OWNER_ADDRESS});
-        var equipe2Contract = await myContract.methods.getEquipe2().call({from : OWNER_ADDRESS});
-        var butEquipe1Contract = await myContract.methods.getButsEquipe1().call({from : OWNER_ADDRESS});
-        var butEquipe2Contract = await myContract.methods.getButsEquipe2().call({from : OWNER_ADDRESS});
-        var statusMatchContract = await myContract.methods.getStatusMatch().call({from : OWNER_ADDRESS});
+        var rewardContract = await myContract.methods.getTotalReward().call({from : process.env.OWNER});
+        var statusContract = await myContract.methods.marketIsClosed().call({from : process.env.OWNER});
+        var cote1Contract = await myContract.methods.getCote1().call({from : process.env.OWNER});
+        var cote2Contract = await myContract.methods.getCote2().call({from : process.env.OWNER});
+        var coteNulleContract = await myContract.methods.getCoteNulle().call({from : process.env.OWNER});
+        var equipe1Contract = await myContract.methods.getEquipe1().call({from : process.env.OWNER});
+        var equipe2Contract = await myContract.methods.getEquipe2().call({from : process.env.OWNER});
+        var butEquipe1Contract = await myContract.methods.getButsEquipe1().call({from : process.env.OWNER});
+        var butEquipe2Contract = await myContract.methods.getButsEquipe2().call({from : process.env.OWNER});
+        var statusMatchContract = await myContract.methods.getStatusMatch().call({from : process.env.OWNER});
             
         return res.render('market', {
             contractName : parisContract.contractName, 
@@ -62,7 +60,7 @@ app.get('/' , (req , res)=>{
 app.post('/bet', (req, res) => {
  
     var privateKey = 'abf99e597cfecc57653608e0f9406adbae258ae6bb937f0f052211d2485f4d79';
-    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
+    var myContract = new web3.eth.Contract( parisContract.abi, process.env.CONTRACT,  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
         gasPrice: '20000000000'
     });
@@ -71,7 +69,7 @@ app.post('/bet', (req, res) => {
     var ether = req.body.ether;
     
     const transaction = myContract.methods.addBet(userBet);
-    const gasCost = calculateGas(transaction,OWNER_ADDRESS);
+    const gasCost = calculateGas(transaction,process.env.OWNER);
     const options = {
         to      : transaction._parent._address,
         value : web3.utils.toWei(ether, 'ether'),
@@ -95,14 +93,14 @@ app.post('/bet', (req, res) => {
 });
 
 app.get('/myBets', (req, res) => {
-    var myContract = new web3.eth.Contract( parisContract.abi, CONTRACT_ADDRESS,  {
+    var myContract = new web3.eth.Contract( parisContract.abi, process.env.CONTRACT,  {
         from: '0x61639B80171D8175760204636e3a56BdB931bdf6',
         gasPrice: '20000000000'
     });
     var bets = myContract.methods.getBets().call({from : '0x61639B80171D8175760204636e3a56BdB931bdf6'})
     .then((bet) => {
         console.log(bet);
-        //res.write(bet);
+        res.write(bet);
     })
     .catch((err) => {
         console.log(err);
